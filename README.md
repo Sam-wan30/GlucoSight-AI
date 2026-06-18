@@ -127,7 +127,7 @@ On Windows:
 ### 3. Install dependencies
 
 ```bash
-python3 -m pip install -r "Machine learning model/requirements.txt"
+python3 -m pip install -r requirements.txt
 ```
 
 SHAP and ReportLab are optional at runtime. If either cannot load, the application keeps working through its model-contribution and HTML-report fallbacks.
@@ -153,7 +153,9 @@ Streamlit will display the local dashboard URL, normally [http://localhost:8501]
 
 ### Streamlit Community Cloud (Recommended)
 
-The repository is organized for direct deployment on Streamlit Community Cloud. The dependency file sits beside the entry point, and the shared Streamlit configuration is at the repository root.
+The repository is organized for direct deployment on Streamlit Community Cloud. Both `requirements.txt` and the shared Streamlit configuration are at the repository root, avoiding installer path issues caused by the space in the application directory name.
+
+> **Existing deployment repair:** The failed deployment log shows Python 3.14.6. Delete that Community Cloud app and create it again with Python 3.12 in Advanced settings. Community Cloud does not support changing an existing app's Python version in place.
 
 1. Push the complete project to a GitHub repository. Confirm that the `models/`, `assets/`, `utils/`, and `data/` directories are included.
 2. Sign in to [Streamlit Community Cloud](https://share.streamlit.io/) with GitHub.
@@ -169,7 +171,7 @@ The repository is organized for direct deployment on Streamlit Community Cloud. 
 7. Leave the Secrets field empty. This application does not require API keys or environment variables.
 8. Select **Deploy** and monitor the build logs until the app is healthy.
 
-Community Cloud searches beside the entry point for `requirements.txt`, so it will install `Machine learning model/requirements.txt` automatically. See the official [file organization](https://docs.streamlit.io/deploy/streamlit-community-cloud/deploy-your-app/file-organization), [dependency](https://docs.streamlit.io/deploy/streamlit-community-cloud/deploy-your-app/app-dependencies), and [deployment](https://docs.streamlit.io/deploy/streamlit-community-cloud/deploy-your-app/deploy) guidance.
+Community Cloud runs from the repository root and will install the root `requirements.txt` automatically. See the official [file organization](https://docs.streamlit.io/deploy/streamlit-community-cloud/deploy-your-app/file-organization), [dependency](https://docs.streamlit.io/deploy/streamlit-community-cloud/deploy-your-app/app-dependencies), and [deployment](https://docs.streamlit.io/deploy/streamlit-community-cloud/deploy-your-app/deploy) guidance.
 
 ### Optional: Render
 
@@ -178,7 +180,7 @@ Create a Python Web Service from the GitHub repository with:
 **Build command**
 
 ```bash
-pip install -r "Machine learning model/requirements.txt"
+pip install -r requirements.txt
 ```
 
 **Start command**
@@ -205,7 +207,8 @@ Hugging Face has deprecated its built-in Streamlit SDK for new Spaces. Use a **D
 
 | Error | Likely cause | Fix |
 | --- | --- | --- |
-| `ModuleNotFoundError` during build | Dependency file was not committed or the wrong entry point was selected | Confirm `Machine learning model/requirements.txt` exists and use the exact entry-point path shown above |
+| Installer parses `model/requirements.txt` as a package | A dependency file was placed inside the space-containing app directory | Keep the single `requirements.txt` at repository root and reboot the app |
+| `ModuleNotFoundError` during build | Dependency file was not committed or the wrong entry point was selected | Confirm the root `requirements.txt` exists and use the exact entry-point path shown above |
 | `Dataset not found` | The `data/` directory was omitted from GitHub or filename casing changed | Commit `data/diabetes.csv` with the same capitalization |
 | Logo or page icon is missing | The asset directory was omitted | Commit both files in `Machine learning model/assets/` |
 | Model artifact cannot be loaded | Python or scikit-learn version differs from the saved pickle | Choose Python 3.12 and keep `scikit-learn==1.4.2`; the app also probes artifacts and can retrain incompatible files |
@@ -218,13 +221,13 @@ Hugging Face has deprecated its built-in Streamlit SDK for new Spaces. Use a **D
 .
 |-- README.md
 |-- .gitignore
+|-- requirements.txt              # Cloud and local Python dependencies
 |-- .streamlit/
 |   `-- config.toml
 |-- data/
 |   `-- diabetes.csv
 `-- Machine learning model/
     |-- streamlit_app_new.py       # Streamlit UI and orchestration
-    |-- requirements.txt           # Python dependencies
     |-- config.yaml                # Application configuration
     |-- deploy.sh                  # Local deployment helper
     |-- assets/
