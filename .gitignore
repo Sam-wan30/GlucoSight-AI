@@ -1,0 +1,34 @@
+# macOS metadata
+.DS_Store
+**/.DS_Store
+
+# Python bytecode and tool caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Local virtual environments
+.venv/
+venv/
+env/
+
+# Runtime logs and temporary files
+*.log
+*.tmp
+*.temp
+*.swp
+*~
+
+# Local secrets must not be committed
+.streamlit/secrets.toml
+.env
+.env.*
+
+# Conservative cleanup archive; review manually before permanent deletion
+_cleanup_backup/

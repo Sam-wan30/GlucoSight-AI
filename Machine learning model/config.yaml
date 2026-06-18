@@ -1,0 +1,143 @@
+# Diabetes Risk Prediction App Configuration
+# ==========================================
+
+# Application Settings
+app:
+  title: "GlucoSight AI"
+  description: "Explainable diabetes risk intelligence platform"
+  version: "2.0.0"
+  author: "IITG Project"
+
+# Model Configuration
+model:
+  # Model type: logistic_regression, lda, random_forest
+  type: "random_forest"
+  
+  # Model parameters
+  parameters:
+    max_iter: 1000
+    random_state: 42
+    class_weight: "balanced"
+    solver: "lbfgs"
+  
+  # Risk thresholds
+  thresholds:
+    high_risk: 0.7
+    moderate_risk: 0.4
+    low_risk: 0.0
+
+# Data Configuration
+data:
+  # Data directory (relative to app directory)
+  data_dir: "../data"
+  
+  # Dataset files
+  cleaned_dataset: "diabetes_cleaned.csv"
+  raw_dataset: "diabetes.csv"
+  
+  # Feature columns
+  features:
+    - "Pregnancies"
+    - "Glucose"
+    - "BloodPressure"
+    - "SkinThickness"
+    - "Insulin"
+    - "BMI"
+    - "DiabetesPedigreeFunction"
+    - "Age"
+  
+  # Target column
+  target: "Outcome"
+  
+  # Columns with invalid zeros that need imputation
+  invalid_zero_columns:
+    - "Glucose"
+    - "BloodPressure"
+    - "SkinThickness"
+    - "Insulin"
+    - "BMI"
+
+# Model Persistence
+persistence:
+  # Model directory
+  model_dir: "models"
+  
+  # File names
+  model_file: "diabetes_model.pkl"
+  scaler_file: "scaler.pkl"
+  feature_names_file: "feature_names.pkl"
+  
+  # Whether to retrain model if files exist
+  force_retrain: false
+
+# Input Validation
+validation:
+  # Range validation
+  ranges:
+    Pregnancies:
+      min: 0
+      max: 20
+    Glucose:
+      min: 0
+      max: 600
+    BloodPressure:
+      min: 0
+      max: 200
+    SkinThickness:
+      min: 0
+      max: 100
+    Insulin:
+      min: 0
+      max: 1000
+    BMI:
+      min: 0
+      max: 100
+    DiabetesPedigreeFunction:
+      min: 0.0
+      max: 3.0
+    Age:
+      min: 0
+      max: 150
+  
+  # Warning thresholds
+  warnings:
+    Glucose: 400
+    BMI: 60
+    Age: 120
+
+# Logging Configuration
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "app.log"
+
+# Streamlit Configuration
+streamlit:
+  page_title: "GlucoSight AI"
+  page_icon: "assets/glucosight_logo.png"
+  layout: "wide"
+  initial_sidebar_state: "expanded"
+  
+  # Theme settings
+  theme:
+    primaryColor: "#1e3c72"
+    backgroundColor: "#f5f7fa"
+    secondaryBackgroundColor: "#e8ecf1"
+    textColor: "#262730"
+    font: "sans serif"
+
+# Medical Disclaimer
+disclaimer:
+  enabled: true
+  text: "This clinical decision support tool is for educational and research purposes only. It should not be used as a substitute for professional medical advice, diagnosis, or treatment."
+
+# Performance Settings
+performance:
+  # Enable caching
+  enable_caching: true
+  
+  # Cache TTL in seconds
+  cache_ttl: 3600
+  
+  # Maximum number of cached items
+  max_cached_items: 100
