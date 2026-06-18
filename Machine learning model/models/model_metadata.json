@@ -1,5 +1,6 @@
 {
   "model_type": "Random Forest",
+  "sklearn_version": "1.4.2",
   "dataset_path": "../data/diabetes.csv",
   "dataset_sha256": "698c203a14aa31941d2251175330c9199f3ccdb31597abbba2a3e35416257a72",
   "dataset_size_bytes": 23873,

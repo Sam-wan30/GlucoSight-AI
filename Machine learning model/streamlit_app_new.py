@@ -10,6 +10,7 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.impute import SimpleImputer
 from sklearn.ensemble import RandomForestClassifier
+from sklearn import __version__ as SKLEARN_VERSION
 import pickle
 import os
 import logging
@@ -1659,6 +1660,7 @@ def model_artifacts_are_current():
     return (
         metadata.get("dataset_sha256") == current.get("sha256")
         and metadata.get("dataset_size_bytes") == current.get("size_bytes")
+        and metadata.get("sklearn_version") == SKLEARN_VERSION
     )
 
 
@@ -1764,6 +1766,7 @@ def train_and_save_model():
         fingerprint = dataset_fingerprint()
         metadata = {
             "model_type": re.sub(r"(?<!^)(?=[A-Z])", " ", model.__class__.__name__),
+            "sklearn_version": SKLEARN_VERSION,
             "dataset_path": os.path.relpath(fingerprint.get("path"), APP_DIR),
             "dataset_sha256": fingerprint.get("sha256"),
             "dataset_size_bytes": fingerprint.get("size_bytes"),

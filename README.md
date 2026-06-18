@@ -5,7 +5,7 @@
 
   **Explainable diabetes risk intelligence for interactive clinical decision support**
 
-  [![Python](https://img.shields.io/badge/Python-3.8%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+  [![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
   [![Streamlit](https://img.shields.io/badge/Streamlit-1.32%2B-FF4B4B?logo=streamlit&logoColor=white)](https://streamlit.io/)
   [![scikit-learn](https://img.shields.io/badge/scikit--learn-1.3%2B-F7931E?logo=scikitlearn&logoColor=white)](https://scikit-learn.org/)
   ![Status](https://img.shields.io/badge/status-portfolio%20ready-10B981)
@@ -102,7 +102,7 @@ No dashboard screenshots are currently stored in the repository. Add exported sc
 
 ### Prerequisites
 
-- Python 3.8 or newer
+- Python 3.11 or newer
 - `pip`
 
 ### 1. Open the project directory
@@ -155,7 +155,7 @@ Streamlit will display the local dashboard URL, normally [http://localhost:8501]
 
 The repository is organized for direct deployment on Streamlit Community Cloud. Both `requirements.txt` and the shared Streamlit configuration are at the repository root, avoiding installer path issues caused by the space in the application directory name.
 
-> **Existing deployment repair:** The failed deployment log shows Python 3.14.6. Delete that Community Cloud app and create it again with Python 3.12 in Advanced settings. Community Cloud does not support changing an existing app's Python version in place.
+> **Deployment repair:** The core dependency stack is pinned to releases with Python 3.14 Linux wheels, matching the current Community Cloud runtime. The app detects the older bundled scikit-learn artifact and retrains it safely on first cloud startup. SHAP is skipped on Python 3.14 until its `numba` dependency publishes compatible wheels; the dashboard uses its tested model-contribution fallback instead.
 
 1. Push the complete project to a GitHub repository. Confirm that the `models/`, `assets/`, `utils/`, and `data/` directories are included.
 2. Sign in to [Streamlit Community Cloud](https://share.streamlit.io/) with GitHub.
@@ -167,7 +167,7 @@ The repository is organized for direct deployment on Streamlit Community Cloud. 
    Machine learning model/streamlit_app_new.py
    ```
 
-6. Open **Advanced settings** and choose **Python 3.12**, matching the runtime used to validate the saved model artifacts.
+6. Keep the current **Python 3.14** runtime. The pinned dependencies support it directly.
 7. Leave the Secrets field empty. This application does not require API keys or environment variables.
 8. Select **Deploy** and monitor the build logs until the app is healthy.
 
@@ -199,7 +199,8 @@ Hugging Face has deprecated its built-in Streamlit SDK for new Spaces. Use a **D
 
 - No secrets or API keys are required.
 - No Debian system packages are required, so there is no `packages.txt`.
-- Python is selected in Community Cloud Advanced settings, so there is no `runtime.txt`.
+- The dependency stack supports Community Cloud's Python 3.14 runtime, so there is no `runtime.txt`.
+- Python 3.14 uses the built-in explanation fallback; SHAP remains enabled automatically on supported Python versions below 3.14.
 - Assessment history and monitoring remain session-based and are cleared when the app session ends.
 - The bundled model is approximately 5.3 MB and can be committed directly to GitHub without Git LFS.
 
@@ -211,7 +212,7 @@ Hugging Face has deprecated its built-in Streamlit SDK for new Spaces. Use a **D
 | `ModuleNotFoundError` during build | Dependency file was not committed or the wrong entry point was selected | Confirm the root `requirements.txt` exists and use the exact entry-point path shown above |
 | `Dataset not found` | The `data/` directory was omitted from GitHub or filename casing changed | Commit `data/diabetes.csv` with the same capitalization |
 | Logo or page icon is missing | The asset directory was omitted | Commit both files in `Machine learning model/assets/` |
-| Model artifact cannot be loaded | Python or scikit-learn version differs from the saved pickle | Choose Python 3.12 and keep `scikit-learn==1.4.2`; the app also probes artifacts and can retrain incompatible files |
+| Model artifact cannot be loaded | The bundled pickle was created by an older scikit-learn version | The app compares artifact/runtime versions and retrains automatically from `data/diabetes.csv` |
 | SHAP explanation falls back | SHAP is unavailable or incompatible at runtime | Check the dependency installation logs; prediction remains available through the built-in contribution fallback |
 | Render reports no open port | The service is not using Render's assigned port | Use the exact Render start command with `--server.port $PORT` |
 

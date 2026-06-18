@@ -1,7 +1,9 @@
-# Keep cloud builds compatible with the checked-in scikit-learn artifacts.
-streamlit>=1.32,<2
-pandas>=2.0,<3
-numpy>=1.24,<2
-scikit-learn==1.4.2
-reportlab>=4.0,<5
-shap>=0.46,<1
+# Python 3.14-compatible, wheel-backed Streamlit Community Cloud stack.
+streamlit==1.58.0
+pandas==2.3.3
+numpy==2.4.6
+scikit-learn==1.9.0
+reportlab==4.5.1
+# Numba does not currently publish Python 3.14 wheels; the app uses its tested
+# model-contribution fallback on 3.14 and installs SHAP on supported runtimes.
+shap==0.52.0; python_version < "3.14"
